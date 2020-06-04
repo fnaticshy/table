@@ -75,19 +75,27 @@ export default {
   mutations: {
     updateFilter(state, payload) {
       state.filterOptions.forEach((el) => {
-        if (el.id === payload) {
+        if (el.id === payload.id) {
           el.isActive = !el.isActive
+          if (el.sortedBy) {
+            const arr = [...state.filterOptions].filter(
+              (el) => el.isActive === true
+            )
+            state.filterOptions.forEach((el) => (el.sortedBy = false))
+
+            for (let item of arr) {
+              if (item.isActive && !payload.isActive) item.sortedBy = true
+              break
+            }
+          }
+
           state.isEverythingSelected = false
         }
       })
     },
     updatePagination({ countOfConclusions }, payload) {
       countOfConclusions.forEach((el) => {
-        if (el.id !== payload) {
-          el.isActive = false
-        } else {
-          el.isActive = true
-        }
+        el.isActive = el.id === payload.id
       })
     },
     updateAll({ filterOptions }, payload) {
@@ -109,11 +117,8 @@ export default {
     },
     updateColumnSorting({ filterOptions }, payload) {
       filterOptions.forEach((el) => {
-        if (el.id !== payload) {
-          el.sortByColumn = false
-        } else {
-          el.sortByColumn = true
-        }
+        if (!payload.isCorrectElement) return
+        el.sortByColumn = el.id === payload.id
       })
     },
     resetSortingBy({ filterOptions }) {
@@ -121,9 +126,9 @@ export default {
     },
   },
   actions: {
-    updateFilters({ commit }, { id, type }) {
-      if (type === 'filter') commit('updateFilter', id)
-      if (type === 'pagination') commit('updatePagination', id)
+    updateFilters({ commit }, { el, type }) {
+      if (type === 'filter') commit('updateFilter', el)
+      if (type === 'pagination') commit('updatePagination', el)
     },
     updateAll({ commit }, payload) {
       commit('updateAll', payload)
@@ -172,13 +177,16 @@ export default {
       let val
       filterOptions.forEach((el) => {
         if (el.sortedBy) {
-          val = el.value
+          val = {
+            value: el.value,
+            id: el.id,
+          }
         }
       })
       return val
     },
     sortColumnBy({ filterOptions }) {
-      let val = filterOptions[0].value
+      let val = null
       filterOptions.forEach((el) => {
         if (el.sortByColumn) {
           val = el.value

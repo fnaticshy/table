@@ -6,6 +6,8 @@
       :countOfConclusions="countOfConclusions"
       :checkedItems="checkedItems"
       :pageCount="pageCount"
+      @onSortingBy="sortingByHandler"
+      @onOpenModal="modalHandler"
       @onPrevPage="nextPage"
       @onNextPage="prevPage"
       )
@@ -17,7 +19,7 @@
       )
     div
       TableItem(
-        v-for="item of filteredItems"
+        v-for="item of sortedItems"
         :key="item.id"
         :checked="item.chosen"
         :item="item"
@@ -28,7 +30,7 @@
       ref="ModalTooltip"
       :style="modalCoords"
       v-show="modal.isVisible"
-      @onAction="closeModal"
+      @onAction="deleteItems"
       )
 </template>
 
@@ -52,7 +54,7 @@ export default {
         isVisible: false,
         coords: {
           top: 0,
-          left: 0,
+          right: 0,
         },
       },
       checkedItems: [],
@@ -61,12 +63,10 @@ export default {
         start: null,
         end: null,
       },
+      operationData: null,
     }
   },
   computed: {
-    sortedByCategory() {
-      return this.$store.getters.sortedByCategory
-    },
     areAllItemsSelected() {
       let result = true
 
@@ -100,22 +100,32 @@ export default {
           items.push(item)
         }
       })
-      console.log(this.sortedByCategory, this.sortColumnBy)
-      return items.sort((a, b) => {
-        if (a[this.sortColumnBy] > b[this.sortColumnBy]) {
-          return 1
+
+      return items
+    },
+    sortedItems() {
+      return [...this.filteredItems].sort((a, b) => {
+        if (this.sortColumnBy === 'product') {
+          if (a[this.sortColumnBy] > b[this.sortColumnBy]) {
+            return 1
+          }
+          if (a[this.sortColumnBy] < b[this.sortColumnBy]) {
+            return -1
+          }
+          return 0
+        } else {
+          if (a[this.sortColumnBy] > b[this.sortColumnBy]) {
+            return -1
+          }
+          if (a[this.sortColumnBy] < b[this.sortColumnBy]) {
+            return 1
+          }
+          return 0
         }
-        if (a[this.sortColumnBy] < b[this.sortColumnBy]) {
-          return -1
-        }
-        return 0
       })
     },
     chosenCountOfConclusions() {
       return this.$store.getters.chosenCountOfConclusions
-    },
-    sortColumnBy() {
-      return this.$store.getters.sortColumnBy
     },
     filteredOptions() {
       return this.$store.getters.filteredOptions
@@ -127,7 +137,7 @@ export default {
       return this.$store.getters.getItems
     },
     modalCoords() {
-      return `top:${this.modal.coords.top}px;right:${this.modal.coords.left}px;`
+      return `top:${this.modal.coords.top}px;left:${this.modal.coords.right}px;right: auto;`
     },
     filterOptions() {
       return this.$store.getters.filterOptions
@@ -155,6 +165,12 @@ export default {
 
       return this.getItems.slice(start, end)
     },
+    sortedByCategory() {
+      return this.$store.getters.sortedByCategory
+    },
+    sortColumnBy() {
+      return this.$store.getters.sortColumnBy
+    },
   },
   methods: {
     nextPage() {
@@ -162,13 +178,6 @@ export default {
     },
     prevPage() {
       this.pagination.pageNumber--
-    },
-    closeModal() {
-      this.modal.isVisible = false
-    },
-    sortColumnByField(id) {
-      // todo добавить возможность переключать сортировку только в активном по сортировке поле
-      this.$store.dispatch('updateColumnSorting', id)
     },
     selectAllHandler() {
       this.$store.dispatch('updateProducts', {
@@ -208,6 +217,14 @@ export default {
           this.chosenCountOfConclusions,
       })
     },
+    sortColumnByField(id) {
+      const isCorrectElement = this.sortedByCategory.id === id
+      this.$store.dispatch('updateColumnSorting', { id, isCorrectElement })
+    },
+    sortingByHandler(id) {
+      this.$store.dispatch('updateSortedBy', id)
+      this.$store.dispatch('resetSortingBy')
+    },
     modalHandler(ctx) {
       const coords = ctx.target.getBoundingClientRect(),
         minHeightFromModel = 96,
@@ -222,13 +239,29 @@ export default {
       if (top < 0) top = coords.top + coords.height + spacer
 
       let right = coords.right + (ctx.target.offsetWidth - modalWidth) / 2
+      if (right > document.documentElement.clientWidth - modalWidth)
+        right = document.documentElement.clientWidth - modalWidth
       if (right < 0) right = 0
 
       this.modal.coords = {
         top,
         right,
       }
+
+      this.operationData = {
+        type: ctx.currentTarget.dataset.type,
+        id: ctx.currentTarget.dataset.id,
+      }
+
       this.modal.isVisible = true
+    },
+    deleteItems() {
+      if (this.operationData.type === 'heap') {
+        this.$store.dispatch('deleteProducts', this.checkedItems)
+      } else {
+        this.$store.dispatch('deleteProducts', [+this.operationData.id])
+      }
+      this.modal.isVisible = false
     },
   },
   created() {

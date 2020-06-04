@@ -1,7 +1,7 @@
-<template>
-  <div id="app">
-    <Table />
-  </div>
+<template lang="pug">
+  div(id="app")
+    .wrapper
+      Table
 </template>
 
 <script>
@@ -28,5 +28,10 @@ body {
   line-height: 24px;
   margin: 0;
   padding: 0;
+}
+
+.wrapper {
+  width: 95%;
+  margin: 3% auto;
 }
 </style>

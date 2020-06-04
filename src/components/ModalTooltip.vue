@@ -58,7 +58,7 @@ export default {
   border-radius: $border-radius-modal;
   z-index: 2;
   right: 0;
-  min-width: 254px;
+  min-width: 222px;
   max-width: 508px;
   box-shadow: $shadow;
 

@@ -1,12 +1,12 @@
 <template lang="pug">
   .select(v-click-outside="closeSelect")
     .select__btn(@click="openSelect")
-      div(v-if="type === 'filter'") {{ activeFilters.length }} columns selected
-      div(v-else) {{ activeFilters[0].name }}
+      i.select__icon
+        simple-svg(:src="arrowSmall" custom-class-name="select__icon")
+      div.select__text(v-if="type === 'filter'") {{ activeFilters.length }} columns selected
+      div.select__text(v-else) {{ activeFilters[0].name }}
 
-    ul.select__wrapper(
-      v-if="isOpen"
-      )
+    ul.select__wrapper(v-if="isOpen")
       li(
         v-if="type === 'filter'"
         class="select__item"
@@ -21,12 +21,12 @@
       li(
         class="select__item"
         v-for="option of options"
-        @click="optionHandler(option.id)"
+        @click="optionHandler(option)"
         :class="{'active' : option.isActive}"
         :key="option.name"
         )
         Checkbox(
-          @onChangeValue="optionHandler(option.id)"
+          @onChangeValue="optionHandler(option)"
           :is-checked="option.isActive"
           )
         .select__text {{ option.name }}
@@ -70,17 +70,28 @@ export default {
       this.$emit('onClose')
     },
     openSelect() {
-      this.$emit('onOpen')
+      if (this.isOpen) {
+          this.$emit('onClose')
+      } else {
+          this.$emit('onOpen')
+      }
     },
-    optionHandler(id) {
+    optionHandler(el) {
+      if (this.type === 'pagination') this.$emit('onClose')
       this.$store.dispatch('updateFilters', {
-        id,
+        el,
         type: this.type,
       })
+      this.$store.dispatch('resetSortingBy')
     },
     selectAll() {
       this.$emit('onSelectAll')
     },
+  },
+  data() {
+      return {
+          arrowSmall: require(`@/assets/icons/${'arrow-small'}.svg`),
+      }
   },
   directives: {
     ClickOutside,
@@ -97,9 +108,38 @@ export default {
   position: relative;
 
   &__btn {
-    padding: 4px 20px;
+    position: relative;
+    color: $comet;
+    padding: 4px 27px 4px 13px;
     border: 1px solid $mischka;
-    border-radius: $border-radius-btn;
+    border-radius: $border-filter-items;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__text {
+    @include ellipsis;
+  }
+
+  &__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 8px;
+    height: 5px;
+    top: 0;
+    right: 12px;
+    color: $comet;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+
+    &__icon {
+      position: absolute;
+    }
   }
 
   &__item {
@@ -124,6 +164,7 @@ export default {
   &__wrapper {
     @include list-reset;
     position: absolute;
+    right: 0;
     z-index: 3;
     background-color: $white;
     box-shadow: $shadow;

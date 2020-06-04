@@ -1,7 +1,7 @@
 <template lang="pug">
   button.btn(
     :class="btnClass"
-    @click="clickHandler"
+    @click="clickHandler($event)"
     ) {{ text }}
 </template>
 
@@ -24,8 +24,8 @@ export default {
     },
   },
   methods: {
-    clickHandler() {
-      this.$emit('onClickBtn')
+    clickHandler(event) {
+      this.$emit('onClickBtn', event)
     },
   },
 }
@@ -44,6 +44,7 @@ export default {
   transition: all 200ms;
   min-width: 76px;
   outline: none;
+  white-space: nowrap;
 
   &:hover {
     cursor: pointer;
@@ -58,6 +59,17 @@ export default {
       border-color: lighten($confirm, 10%);
       background-color: lighten($confirm, 10%);
     }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: default;
+
+      &:hover {
+        background-color: $confirm;
+        color: $white;
+        border-color: $confirm;
+      }
+    }
   }
 
   &--default {
@@ -69,6 +81,17 @@ export default {
       color: $red;
       border-color: lighten($ghost, 10%);
       background-color: darken($default, 10%);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: default;
+
+      &:hover {
+        background-color: $ghost;
+        color: $comet;
+        border-color: $ghost;
+      }
     }
   }
 

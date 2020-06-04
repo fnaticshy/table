@@ -9,10 +9,13 @@
       .table-item__desc(v-for="value of filteredItem")
           span.table-item__inner {{ value }}
     .table-item__button
-      button(@click="openModal($event)")
+      button(
+        :data-id="item.id"
+        data-type="single"
+        @click="openModal($event)"
+        )
         simple-svg(:src="rubbishBinSrc")
         span delete
-
 </template>
 
 <script>
@@ -42,7 +45,7 @@ export default {
         }
       }
 
-      return this.sortObjBuyValue(obj, this.sortedByCategory)
+      return this.sortObjBuyValue(obj, this.sortedByCategory.value)
     },
   },
   props: {
@@ -97,6 +100,7 @@ export default {
 
 <style scoped lang="scss">
 @import '../../common/color-variables';
+@import '../../common/size-variables';
 @import '../../common/mixins';
 
 /*data-in*/
@@ -111,8 +115,6 @@ $desc-width-in-percent: $common-desc-block-width-from-model/$width-from-model *
   100%/6;
 /*offset width */
 $offset: $offset-block-width-from-model/$width-from-model * 100%;
-/*common*/
-$spacer: 8px;
 
 .table-item {
   position: relative;

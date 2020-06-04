@@ -1,14 +1,11 @@
 import { getProducts } from '../mock/request'
+import { deleteProducts } from '../mock/request'
 
 export default {
   state: {
     items: [],
   },
   mutations: {
-    deleteProducts({ items }, payload) {
-      console.log(items)
-      console.log('payload', payload)
-    },
     saveProducts(state, payload) {
       state.items = payload
     },
@@ -26,8 +23,14 @@ export default {
     },
   },
   actions: {
-    deleteProducts({ commit }, payload) {
-      commit('deleteProducts', payload)
+    async deleteProducts({ commit }, payload) {
+      // eslint-disable-line
+      try {
+        const result = await deleteProducts(payload)
+        console.log(result)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async getProducts({ commit }) {
       try {

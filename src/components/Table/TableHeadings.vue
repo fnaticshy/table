@@ -8,9 +8,10 @@
     .table-heading__desc(
       v-for="item of sortedHeadings"
       :class="{ 'active': item.sortByColumn }")
-        span.table-heading__inner(@click="$emit('onSortColumnByField', item.id)") {{ item.name }}
-        i.table-heading__icon
-          simple-svg(:src="arrowUp")
+        .table-heading__text-wrapper
+          span.table-heading__inner(@click="$emit('onSortColumnByField', item.id)") {{ item.name }}
+          i.table-heading__icon
+            simple-svg(:src="arrow")
 
 </template>
 
@@ -32,7 +33,7 @@ export default {
   computed: {
     sortedHeadings() {
       return [...this.headings].sort((a) => {
-        if (a.value.includes(this.sortedByCategory)) {
+        if (a.value.includes(this.sortedByCategory.value)) {
           return -1
         } else {
           return 1
@@ -45,7 +46,7 @@ export default {
   },
   data() {
     return {
-      arrowUp: require(`@/assets/icons/${'arrow-up'}.svg`),
+      arrow: require(`@/assets/icons/${'arrow'}.svg`),
     }
   },
   methods: {
@@ -62,6 +63,7 @@ export default {
 <style scoped lang="scss">
 @import '../../common/color-variables';
 @import '../../common/mixins';
+@import '../../common/size-variables';
 
 /*data-in*/
 $width-from-model: 1140px;
@@ -75,8 +77,6 @@ $desc-width-in-percent: $common-desc-block-width-from-model/$width-from-model *
   100%/6;
 /*offset width */
 $offset: $offset-block-width-from-model/$width-from-model * 100%;
-/*common*/
-$spacer: 8px;
 
 .table-heading {
   display: flex;
@@ -84,12 +84,6 @@ $spacer: 8px;
   padding-bottom: 12px;
   font-weight: 600;
   border-bottom: 1px solid $gallery;
-
-  &__inner {
-    &:hover {
-      cursor: pointer;
-    }
-  }
 
   &__checkbox {
     width: $checkbox-width-in-percent;
@@ -100,10 +94,15 @@ $spacer: 8px;
     @include ellipsis;
   }
 
+  &__text-wrapper {
+    position: relative;
+    padding-right: 12px;
+    @include ellipsis;
+  }
+
   &__desc {
     width: $desc-width-in-percent;
     padding-right: $spacer;
-    @include ellipsis;
 
     &.active {
       color: $fun-green;
@@ -113,12 +112,19 @@ $spacer: 8px;
       }
     }
 
+    &:nth-child(2) {
+      cursor: pointer;
+    }
+
     &:last-child {
       padding-right: $offset;
     }
   }
 
   &__icon {
+    position: absolute;
+    top: 0;
+    right: 0;
     color: $black;
     display: none;
   }
