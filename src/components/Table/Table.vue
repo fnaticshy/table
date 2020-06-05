@@ -166,10 +166,8 @@ export default {
         deleteItems() {
             if (this.operationData.type === 'heap') {
                 this.$store.dispatch('deleteProducts', this.checkedItems)
-                this.$store.dispatch('getProducts')
             } else {
                 this.$store.dispatch('deleteProducts', [+this.operationData.id])
-                this.$store.dispatch('getProducts')
             }
             this.modal.isVisible = false
         },

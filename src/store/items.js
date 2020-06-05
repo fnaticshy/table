@@ -21,6 +21,9 @@ export default {
         }
       }
     },
+    deleteProducts(state, payload) {
+      state.items = state.items.filter(el => !payload.includes(el.id))
+    }
   },
   actions: {
     async deleteProducts({ commit }, payload) {
@@ -29,6 +32,7 @@ export default {
 
       try {
         await deleteProducts(payload)
+        commit('deleteProducts', payload)
         commit('setLoading', false)
       } catch (e) {
         commit('setError', e)
