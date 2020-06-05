@@ -38,6 +38,11 @@ export default {
             arrow: require(`@/assets/icons/${'arrow'}.svg`),
         }
     },
+  methods: {
+      selectAll() {
+          this.$emit('onSelectAll')
+      },
+  },
   computed: {
     sortedHeadings() {
       return [...this.headings].sort((a) => {
