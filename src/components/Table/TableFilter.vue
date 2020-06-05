@@ -126,8 +126,9 @@ export default {
   padding-bottom: 16px;
   background-color: $alabaster;
 
-  @media (max-width: $md) {
+  @media (max-width: $lg) {
     flex-direction: column;
+    align-items: flex-start;
   }
 
   &__wrapper {
@@ -137,7 +138,8 @@ export default {
     justify-content: flex-end;
     width: 50%;
 
-    @media (max-width: $md) {
+    @media (max-width: $lg) {
+      justify-content: flex-start;
       width: 100%;
     }
   }
@@ -161,7 +163,7 @@ export default {
     display: flex;
     width: 50%;
 
-    @media (max-width: $md) {
+    @media (max-width: $lg) {
       width: 100%;
     }
   }
