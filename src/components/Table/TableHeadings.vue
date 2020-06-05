@@ -20,16 +20,24 @@ import Checkbox from '../Checkbox'
 
 export default {
   name: 'TableHeadings',
-  props: {
-    headings: {
-      type: Array,
-      required: true,
-    },
-    areAllItemsSelected: {
-      type: Boolean,
-      required: true,
-    },
+  components: {
+      Checkbox,
   },
+  props: {
+        headings: {
+            type: Array,
+            required: true,
+        },
+        areAllItemsSelected: {
+            type: Boolean,
+            required: true,
+        },
+    },
+  data() {
+        return {
+            arrow: require(`@/assets/icons/${'arrow'}.svg`),
+        }
+    },
   computed: {
     sortedHeadings() {
       return [...this.headings].sort((a) => {
@@ -43,19 +51,6 @@ export default {
     sortedByCategory() {
       return this.$store.getters.sortedByCategory
     },
-  },
-  data() {
-    return {
-      arrow: require(`@/assets/icons/${'arrow'}.svg`),
-    }
-  },
-  methods: {
-    selectAll() {
-      this.$emit('onSelectAll')
-    },
-  },
-  components: {
-    Checkbox,
   },
 }
 </script>

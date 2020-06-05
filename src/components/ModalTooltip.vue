@@ -38,7 +38,7 @@ export default {
       this.$emit('onAction')
     },
     cancelAction() {
-      this.$emit('onAction')
+      this.$emit('onCancel')
     },
   },
 }

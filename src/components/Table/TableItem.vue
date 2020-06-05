@@ -26,28 +26,6 @@ export default {
   components: {
     Checkbox,
   },
-  computed: {
-    sortedByCategory() {
-      return this.$store.getters.sortedByCategory
-    },
-    isEmptyItem() {
-      return (
-        Object.keys(this.filteredItem).length === 0 &&
-        this.filteredItem.constructor === Object
-      )
-    },
-    filteredItem() {
-      const obj = {}
-
-      for (let [key, value] of Object.entries(this.item)) {
-        if (key !== 'id' && key !== 'chosen') {
-          obj[key] = value
-        }
-      }
-
-      return this.sortObjBuyValue(obj, this.sortedByCategory.value)
-    },
-  },
   props: {
     item: {
       type: Object,
@@ -93,6 +71,28 @@ export default {
       this.$emit('onAddToDeletion', {
         id: this.item.id,
       })
+    },
+  },
+  computed: {
+    sortedByCategory() {
+      return this.$store.getters.sortedByCategory
+    },
+    isEmptyItem() {
+      return (
+        Object.keys(this.filteredItem).length === 0 &&
+        this.filteredItem.constructor === Object
+      )
+    },
+    filteredItem() {
+      const obj = {}
+
+      for (let [key, value] of Object.entries(this.item)) {
+        if (key !== 'id' && key !== 'chosen') {
+          obj[key] = value
+        }
+      }
+
+      return this.sortObjBuyValue(obj, this.sortedByCategory.value)
     },
   },
 }

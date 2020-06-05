@@ -17,7 +17,6 @@
           :is-checked="isEverythingSelected"
         )
         .select__text Select all
-
       li(
         class="select__item"
         v-for="option of options"
@@ -41,11 +40,6 @@ export default {
   components: {
     Checkbox,
   },
-  computed: {
-    activeFilters() {
-      return this.options.filter((el) => el.isActive === true)
-    },
-  },
   props: {
     options: {
       type: Array,
@@ -65,15 +59,20 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      arrowSmall: require(`@/assets/icons/${'arrow-small'}.svg`),
+    }
+  },
   methods: {
     closeSelect() {
       this.$emit('onClose')
     },
     openSelect() {
       if (this.isOpen) {
-          this.$emit('onClose')
+        this.$emit('onClose')
       } else {
-          this.$emit('onOpen')
+        this.$emit('onOpen')
       }
     },
     optionHandler(el) {
@@ -88,10 +87,10 @@ export default {
       this.$emit('onSelectAll')
     },
   },
-  data() {
-      return {
-          arrowSmall: require(`@/assets/icons/${'arrow-small'}.svg`),
-      }
+  computed: {
+    activeFilters() {
+      return this.options.filter((el) => el.isActive === true)
+    },
   },
   directives: {
     ClickOutside,

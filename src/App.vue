@@ -32,6 +32,7 @@ body {
 
 .wrapper {
   width: 95%;
-  margin: 3% auto;
+  margin: 1% auto;
+  border: 2px solid;
 }
 </style>

@@ -24,23 +24,34 @@ export default {
   },
   actions: {
     async deleteProducts({ commit }, payload) {
-      // eslint-disable-line
+      commit('clearError')
+      commit('setLoading', true)
+
       try {
         const result = await deleteProducts(payload)
         console.log(result)
+        commit('setLoading', false)
       } catch (e) {
-        console.log(e)
+        commit('setError', e)
+        commit('setLoading', false)
+        throw e
       }
     },
     async getProducts({ commit }) {
+      commit('clearError')
+      commit('setLoading', true)
+
       try {
         const products = await getProducts()
         products.forEach((el) => {
           el.chosen = false
         })
         commit('saveProducts', products)
+        commit('setLoading', false)
       } catch (e) {
-        console.log(e)
+        commit('setError', e)
+        commit('setLoading', false)
+        throw e
       }
     },
     updateProducts({ commit }, payload) {

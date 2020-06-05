@@ -29,16 +29,16 @@ export default {
     },
   },
   data() {
-      return {
-          arrowSmall: require(`@/assets/icons/${'arrow-small'}.svg`),
-      }
+    return {
+      arrowSmall: require(`@/assets/icons/${'arrow-small'}.svg`),
+    }
   },
 }
 </script>
 
 <style scoped lang="scss">
-@import "../common/size-variables";
-@import "../common/color-variables";
+@import '../common/size-variables';
+@import '../common/color-variables';
 
 .pagination {
   &__controls {

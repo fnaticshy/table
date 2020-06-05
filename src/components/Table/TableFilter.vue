@@ -61,17 +61,6 @@ export default {
     BaseButton,
     Pagination,
   },
-  computed: {
-    isEverythingSelected() {
-      return this.$store.getters.isEverythingSelected
-    },
-  },
-  data() {
-    return {
-      filterIsOpen: false,
-      paginationIsOpen: false,
-    }
-  },
   props: {
     pageCount: {
       type: Object,
@@ -94,6 +83,12 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      filterIsOpen: false,
+      paginationIsOpen: false,
+    }
+  },
   methods: {
     deleteItems(event) {
       this.$emit('onOpenModal', event)
@@ -104,6 +99,11 @@ export default {
     selectAllHandler() {
       this.$store.dispatch('isEverythingSelected')
       this.$store.dispatch('updateAll', this.isEverythingSelected)
+    },
+  },
+  computed: {
+    isEverythingSelected() {
+      return this.$store.getters.isEverythingSelected
     },
   },
   directives: {

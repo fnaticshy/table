@@ -18,14 +18,14 @@ export default {
       required: true,
     },
   },
+  methods: {
+        clickHandler(event) {
+            this.$emit('onClickBtn', event)
+        },
+    },
   computed: {
     btnClass() {
       return `btn--${this.type}`
-    },
-  },
-  methods: {
-    clickHandler(event) {
-      this.$emit('onClickBtn', event)
     },
   },
 }

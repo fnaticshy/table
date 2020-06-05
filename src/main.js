@@ -4,10 +4,12 @@ import store from './store'
 
 // plugins
 import VueSimpleSVG from 'vue-simple-svg'
+import Vuebar from 'vuebar'
 
 Vue.config.productionTip = false
 
 Vue.use(VueSimpleSVG)
+Vue.use(Vuebar)
 
 new Vue({
   store,
