@@ -1,4 +1,4 @@
-# untitled
+# Table component
 
 ## Project setup
 ```
