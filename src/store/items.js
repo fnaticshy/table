@@ -28,8 +28,7 @@ export default {
       commit('setLoading', true)
 
       try {
-        const result = await deleteProducts(payload)
-        console.log(result)
+        await deleteProducts(payload)
         commit('setLoading', false)
       } catch (e) {
         commit('setError', e)
