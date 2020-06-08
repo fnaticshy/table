@@ -76,6 +76,7 @@ export default {
         pageNumber: 0,
         start: null,
         end: null,
+        savedStartIndex: 0,
       },
       operationData: null,
     }
@@ -83,17 +84,18 @@ export default {
   methods: {
         nextPage() {
             this.pagination.pageNumber++
+            this.pagination.savedStartIndex += this.chosenCountOfConclusions
         },
         prevPage() {
             this.pagination.pageNumber--
+            this.pagination.savedStartIndex -= this.chosenCountOfConclusions
+            if ( this.pagination.savedStartIndex < 0 ) this.pagination.savedStartIndex = 0
         },
         selectAllHandler() {
             this.$store.dispatch('updateProducts', {
                 currentValue: this.areAllItemsSelected,
-                start: this.pagination.pageNumber * this.chosenCountOfConclusions,
-                end:
-                    this.pagination.pageNumber * this.chosenCountOfConclusions +
-                    this.chosenCountOfConclusions,
+                start: this.pagination.savedStartIndex,
+                end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
             })
             this.paginatedData.forEach((item) => {
                 if (item.chosen) {
@@ -119,10 +121,8 @@ export default {
             }
             this.$store.dispatch('updateProduct', {
                 item,
-                start: this.pagination.pageNumber * this.chosenCountOfConclusions,
-                end:
-                    this.pagination.pageNumber * this.chosenCountOfConclusions +
-                    this.chosenCountOfConclusions,
+                start: this.pagination.savedStartIndex,
+                end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
             })
         },
         sortColumnByField(id) {
@@ -263,21 +263,19 @@ export default {
       return this.$store.getters.countOfConclusions
     },
     pageCount() {
-      let l = this.getItems.length,
-        s = this.chosenCountOfConclusions
 
+        console.log('index',this.pagination.savedStartIndex)
+        console.log(this.pagination.savedStartIndex + this.chosenCountOfConclusions)
       return {
-        pageCount: Math.ceil(l / s),
         page: this.pagination.pageNumber,
         count: this.getItems.length,
-        start: this.pagination.pageNumber * this.chosenCountOfConclusions,
-        end:
-          this.pagination.pageNumber * this.chosenCountOfConclusions +
-          this.chosenCountOfConclusions,
+        start: this.pagination.savedStartIndex < 0 ? 0 : this.pagination.savedStartIndex,
+        end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
       }
     },
     paginatedData() {
-      const start = this.pagination.pageNumber * this.chosenCountOfConclusions,
+
+      const start = this.pagination.savedStartIndex < 0 ? 0 : this.pagination.savedStartIndex,
         end = start + this.chosenCountOfConclusions
 
       return this.getItems.slice(start, end)

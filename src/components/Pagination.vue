@@ -3,17 +3,17 @@
     .pagination__controls
       button.pagination__btn.pagination__btn--left(
         @click="$emit('onNextPage')"
-        :disabled="pageCount.page === 0"
+        :disabled="!minimalIndex"
         )
         i.pagination__icon
           simple-svg(:src="arrowSmall")
       span.pagination__text
-        span.pagination__count {{ pageCount.start }} - {{ pageCount.end }}
+        span.pagination__count {{ textStart }}
         | &nbsp of &nbsp
         span.pagination__count {{ pageCount.count }}
       button.pagination__btn.pagination__btn--right(
         @click="$emit('onPrevPage')"
-        :disabled="pageCount.page >= pageCount.pageCount - 1"
+        :disabled="pageCount.end >= pageCount.count"
         )
         i.pagination__icon
           simple-svg(:src="arrowSmall")
@@ -33,6 +33,21 @@ export default {
       arrowSmall: require(`@/assets/icons/${'arrow-small'}.svg`),
     }
   },
+  computed: {
+      chosenCountOfConclusions() {
+          return this.$store.getters.chosenCountOfConclusions
+      },
+      minimalIndex() {
+          console.log((this.chosenCountOfConclusions - this.pageCount.end) > 0)
+            return (this.pageCount.end - this.chosenCountOfConclusions) > 0
+      },
+      textStart() {
+          const from = this.pageCount.start === 0 ? 1 : this.pageCount.start
+          //ToDo bug with 'to'
+          let to = this.pageCount.end > this.pageCount.count ? this.pageCount.count : this.pageCount.end
+          return `${from} - ${to}`
+      }
+  }
 }
 </script>
 
