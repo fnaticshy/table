@@ -49,8 +49,8 @@ import TableItem from './TableItem'
 import TableHeadings from './TableHeadings'
 import ModalTooltip from '../ModalTooltip'
 import TableFilter from './TableFilter'
-import BaseLoader from "../BaseLoader"
-import BaseModal from "../BaseModal";
+import BaseLoader from '../BaseLoader'
+import BaseModal from '../BaseModal'
 
 export default {
   name: 'Table',
@@ -60,7 +60,7 @@ export default {
     ModalTooltip,
     TableFilter,
     BaseLoader,
-    BaseModal
+    BaseModal,
   },
   data() {
     return {
@@ -82,101 +82,102 @@ export default {
     }
   },
   methods: {
-        nextPage() {
-            this.pagination.pageNumber++
-            this.pagination.savedStartIndex += this.chosenCountOfConclusions
-        },
-        prevPage() {
-            this.pagination.pageNumber--
-            this.pagination.savedStartIndex -= this.chosenCountOfConclusions
-            if ( this.pagination.savedStartIndex < 0 ) this.pagination.savedStartIndex = 0
-        },
-        selectAllHandler() {
-            this.$store.dispatch('updateProducts', {
-                currentValue: this.areAllItemsSelected,
-                start: this.pagination.savedStartIndex,
-                end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
-            })
-            this.paginatedData.forEach((item) => {
-                if (item.chosen) {
-                    this.checkedItems.push(item.id)
-                    // uniq
-                    this.checkedItems = this.checkedItems.filter(function (
-                        value,
-                        index,
-                        self
-                    ) {
-                        return self.indexOf(value) === index
-                    })
-                } else {
-                    this.checkedItems = this.checkedItems.filter((el) => el !== item.id)
-                }
-            })
-        },
-        addToDeletion(item) {
-            if (this.checkedItems.includes(item.id)) {
-                this.checkedItems = this.checkedItems.filter((el) => el !== item.id)
-            } else {
-                this.checkedItems.push(item.id)
-            }
-            this.$store.dispatch('updateProduct', {
-                item,
-                start: this.pagination.savedStartIndex,
-                end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
-            })
-        },
-        sortColumnByField(id) {
-            const isCorrectElement = this.sortedByCategory.id === id
-            this.$store.dispatch('updateColumnSorting', { id, isCorrectElement })
-        },
-        sortingByHandler(id) {
-            this.$store.dispatch('updateSortedBy', id)
-            this.$store.dispatch('resetSortingBy')
-        },
-        modalHandler(ctx) {
-            const coords = ctx.target.getBoundingClientRect(),
-                minHeightFromModel = 96,
-                minWidthFromModel = 254,
-                spacer = 5,
-                currentHeight = this.$refs.ModalTooltip.$el.offsetHeight,
-                currentWidth = this.$refs.ModalTooltip.$el.offsetWidth,
-                modalHeight = currentHeight !== 0 ? currentHeight : minHeightFromModel,
-                modalWidth = currentWidth !== 0 ? currentWidth : minWidthFromModel
-
-            let top = coords.top - modalHeight - spacer
-            if (top < 0) top = coords.top + coords.height + spacer
-
-            let right = coords.right + (ctx.target.offsetWidth - modalWidth) / 2
-            if (right > document.documentElement.clientWidth - modalWidth)
-                right = document.documentElement.clientWidth - modalWidth
-            if (right < 0) right = 0
-
-            this.modal.coords = {
-                top,
-                right,
-            }
-
-            this.operationData = {
-                type: ctx.currentTarget.dataset.type,
-                id: ctx.currentTarget.dataset.id,
-            }
-
-            this.modal.isVisible = true
-        },
-        deleteItems() {
-            if (this.operationData.type === 'heap') {
-                this.$store.dispatch('deleteProducts', this.checkedItems)
-                this.checkedItems = []
-            } else {
-                this.$store.dispatch('deleteProducts', [+this.operationData.id])
-                this.checkedItems = []
-            }
-            this.modal.isVisible = false
-        },
-        tryGetItems() {
-            this.$store.dispatch('getProducts')
-        }
+    nextPage() {
+      this.pagination.pageNumber++
+      this.pagination.savedStartIndex += this.chosenCountOfConclusions
     },
+    prevPage() {
+      this.pagination.pageNumber--
+      this.pagination.savedStartIndex -= this.chosenCountOfConclusions
+      if (this.pagination.savedStartIndex < 0)
+        this.pagination.savedStartIndex = 0
+    },
+    selectAllHandler() {
+      this.$store.dispatch('updateProducts', {
+        currentValue: this.areAllItemsSelected,
+        start: this.pagination.savedStartIndex,
+        end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
+      })
+      this.paginatedData.forEach((item) => {
+        if (item.chosen) {
+          this.checkedItems.push(item.id)
+          // uniq
+          this.checkedItems = this.checkedItems.filter(function (
+            value,
+            index,
+            self
+          ) {
+            return self.indexOf(value) === index
+          })
+        } else {
+          this.checkedItems = this.checkedItems.filter((el) => el !== item.id)
+        }
+      })
+    },
+    addToDeletion(item) {
+      if (this.checkedItems.includes(item.id)) {
+        this.checkedItems = this.checkedItems.filter((el) => el !== item.id)
+      } else {
+        this.checkedItems.push(item.id)
+      }
+      this.$store.dispatch('updateProduct', {
+        item,
+        start: this.pagination.savedStartIndex,
+        end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
+      })
+    },
+    sortColumnByField(id) {
+      const isCorrectElement = this.sortedByCategoryId === id
+      this.$store.dispatch('updateColumnSorting', { id, isCorrectElement })
+    },
+    sortingByHandler(id) {
+      this.$store.dispatch('updateSortedBy', id)
+      this.$store.dispatch('resetSortingBy')
+    },
+    modalHandler(ctx) {
+      const coords = ctx.target.getBoundingClientRect(),
+        minHeightFromModel = 96,
+        minWidthFromModel = 254,
+        spacer = 5,
+        currentHeight = this.$refs.ModalTooltip.$el.offsetHeight,
+        currentWidth = this.$refs.ModalTooltip.$el.offsetWidth,
+        modalHeight = currentHeight !== 0 ? currentHeight : minHeightFromModel,
+        modalWidth = currentWidth !== 0 ? currentWidth : minWidthFromModel
+
+      let top = coords.top - modalHeight - spacer
+      if (top < 0) top = coords.top + coords.height + spacer
+
+      let right = coords.right + (ctx.target.offsetWidth - modalWidth) / 2
+      if (right > document.documentElement.clientWidth - modalWidth)
+        right = document.documentElement.clientWidth - modalWidth
+      if (right < 0) right = 0
+
+      this.modal.coords = {
+        top,
+        right,
+      }
+
+      this.operationData = {
+        type: ctx.currentTarget.dataset.type,
+        id: ctx.currentTarget.dataset.id,
+      }
+
+      this.modal.isVisible = true
+    },
+    deleteItems() {
+      if (this.operationData.type === 'heap') {
+        this.$store.dispatch('deleteProducts', this.checkedItems)
+        this.checkedItems = []
+      } else {
+        this.$store.dispatch('deleteProducts', [+this.operationData.id])
+        this.checkedItems = []
+      }
+      this.modal.isVisible = false
+    },
+    tryGetItems() {
+      this.$store.dispatch('getProducts')
+    },
+  },
   computed: {
     loading() {
       return this.$store.getters.loading
@@ -263,48 +264,57 @@ export default {
       return this.$store.getters.countOfConclusions
     },
     pageCount() {
-
-        console.log('index',this.pagination.savedStartIndex)
-        console.log(this.pagination.savedStartIndex + this.chosenCountOfConclusions)
+      console.log('index', this.pagination.savedStartIndex)
+      console.log(
+        this.pagination.savedStartIndex + this.chosenCountOfConclusions
+      )
       return {
         page: this.pagination.pageNumber,
         count: this.getItems.length,
-        start: this.pagination.savedStartIndex < 0 ? 0 : this.pagination.savedStartIndex,
+        start:
+          this.pagination.savedStartIndex < 0
+            ? 0
+            : this.pagination.savedStartIndex,
         end: this.pagination.savedStartIndex + this.chosenCountOfConclusions,
       }
     },
     paginatedData() {
-
-      const start = this.pagination.savedStartIndex < 0 ? 0 : this.pagination.savedStartIndex,
+      const start =
+          this.pagination.savedStartIndex < 0
+            ? 0
+            : this.pagination.savedStartIndex,
         end = start + this.chosenCountOfConclusions
 
       return this.getItems.slice(start, end)
     },
-    sortedByCategory() {
-      return this.$store.getters.sortedByCategory
+    sortedByCategoryId() {
+      return this.$store.getters.sortedByCategoryId
+    },
+    sortedByCategoryVal() {
+      return this.$store.getters.sortedByCategoryVal
     },
     sortColumnBy() {
       return this.$store.getters.sortColumnBy
     },
   },
   created() {
-      this.$store.dispatch('getProducts')
+    this.$store.dispatch('getProducts')
   },
 }
 </script>
 
 <style scoped lang="scss">
-  .table {
-    position: relative;
-    min-height: 595px;
+.table {
+  position: relative;
+  min-height: 595px;
 
-    &__loader {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: 0;
-      margin: auto;
-    }
+  &__loader {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
   }
+}
 </style>

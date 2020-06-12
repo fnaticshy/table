@@ -74,8 +74,8 @@ export default {
     },
   },
   computed: {
-    sortedByCategory() {
-      return this.$store.getters.sortedByCategory
+    sortedByCategoryVal() {
+      return this.$store.getters.sortedByCategoryVal
     },
     isEmptyItem() {
       return (
@@ -92,7 +92,7 @@ export default {
         }
       }
 
-      return this.sortObjBuyValue(obj, this.sortedByCategory.value)
+      return this.sortObjBuyValue(obj, this.sortedByCategoryVal)
     },
   },
 }

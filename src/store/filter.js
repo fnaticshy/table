@@ -74,7 +74,8 @@ export default {
   },
   mutations: {
     updateFilter(state, payload) {
-      state.filterOptions.forEach((el) => {
+      const clonedArr = [...state.filterOptions]
+      clonedArr.forEach((el) => {
         if (el.id === payload.id) {
           el.isActive = !el.isActive
           if (el.sortedBy) {
@@ -88,41 +89,51 @@ export default {
               break
             }
           }
-
           state.isEverythingSelected = false
         }
       })
+      state.filterOptions = clonedArr
     },
-    updatePagination({ countOfConclusions }, payload) {
-      countOfConclusions.forEach((el) => {
+    updatePagination(state, payload) {
+      const clonedArr = [...state.countOfConclusions]
+      clonedArr.forEach((el) => {
         el.isActive = el.id === payload.id
       })
+      state.countOfConclusions = clonedArr
     },
-    updateAll({ filterOptions }, payload) {
-      filterOptions.forEach((el) => {
+    updateAll(state, payload) {
+      const clonedArr = [...state.filterOptions]
+      clonedArr.forEach((el) => {
         el.isActive = payload
       })
+      state.filterOptions = clonedArr
     },
-    updateSortedBy({ filterOptions }, payload) {
-      filterOptions.forEach((el) => {
+    updateSortedBy(state, payload) {
+      const clonedArr = [...state.filterOptions]
+      clonedArr.forEach((el) => {
         if (el.id === payload) {
           el.sortedBy = true
         } else {
           el.sortedBy = false
         }
       })
+      state.filterOptions = clonedArr
     },
     isEverythingSelected(state) {
       state.isEverythingSelected = !state.isEverythingSelected
     },
-    updateColumnSorting({ filterOptions }, payload) {
-      filterOptions.forEach((el) => {
+    updateColumnSorting(state, payload) {
+      const clonedArr = [...state.filterOptions]
+      clonedArr.forEach((el) => {
         if (!payload.isCorrectElement) return
         el.sortByColumn = el.id === payload.id
       })
+      state.filterOptions = clonedArr
     },
-    resetSortingBy({ filterOptions }) {
-      filterOptions.forEach((el) => (el.sortByColumn = false))
+    resetSortingBy(state) {
+      const clonedArr = [...state.filterOptions]
+      clonedArr.forEach((el) => (el.sortByColumn = false))
+      state.filterOptions = clonedArr
     },
   },
   actions: {
@@ -173,14 +184,20 @@ export default {
     isEverythingSelected({ isEverythingSelected }) {
       return isEverythingSelected
     },
-    sortedByCategory({ filterOptions }) {
+    sortedByCategoryId({ filterOptions }) {
       let val
       filterOptions.forEach((el) => {
         if (el.sortedBy) {
-          val = {
-            value: el.value,
-            id: el.id,
-          }
+          val = el.id
+        }
+      })
+      return val
+    },
+    sortedByCategoryVal({ filterOptions }) {
+      let val
+      filterOptions.forEach((el) => {
+        if (el.sortedBy) {
+          val = el.value
         }
       })
       return val

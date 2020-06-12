@@ -21,40 +21,40 @@ import Checkbox from '../Checkbox'
 export default {
   name: 'TableHeadings',
   components: {
-      Checkbox,
+    Checkbox,
   },
   props: {
-        headings: {
-            type: Array,
-            required: true,
-        },
-        areAllItemsSelected: {
-            type: Boolean,
-            required: true,
-        },
+    headings: {
+      type: Array,
+      required: true,
     },
+    areAllItemsSelected: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
-        return {
-            arrow: require(`@/assets/icons/${'arrow'}.svg`),
-        }
-    },
+    return {
+      arrow: require(`@/assets/icons/${'arrow'}.svg`),
+    }
+  },
   methods: {
-      selectAll() {
-          this.$emit('onSelectAll')
-      },
+    selectAll() {
+      this.$emit('onSelectAll')
+    },
   },
   computed: {
     sortedHeadings() {
       return [...this.headings].sort((a) => {
-        if (a.value.includes(this.sortedByCategory.value)) {
+        if (a.value.includes(this.sortedByCategoryVal)) {
           return -1
         } else {
           return 1
         }
       })
     },
-    sortedByCategory() {
-      return this.$store.getters.sortedByCategory
+    sortedByCategoryVal() {
+      return this.$store.getters.sortedByCategoryVal
     },
   },
 }
